@@ -17,11 +17,20 @@ app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(morgan("dev"));
 app.use(cookieParser());
 
-app.get('/auth/google', 
-  passport.authenticate(
-    "google",
-    { scope: ["profile"] }
-));
+// Get Info from Google user
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile"] })
+);
+
+// Handle Redirect after Sign In
+app.get(
+  "/auth/google/redirect",
+  passport.authenticate("google"),
+  (req, res) => {
+    res.send("You reached the callback uri");
+  }
+);
 
 app.get("/", (_, res) => {
   res.send("Welcome to your express application!");

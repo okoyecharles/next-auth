@@ -27,6 +27,3 @@ app.listen(process.env.PORT, () => {
 // npm i -D nodemon
 // "type": "module", "script" -> "dev": "nodemon index.js"
 
-// .env
-// ORIGIN = localhost:3000
-// PORT = 4000

@@ -3,12 +3,14 @@ import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import colors from "@colors/colors/safe.js";
-import passport from "passport";
 
 import dotenv from "dotenv";
 dotenv.config();
 
 import "./config/passport-setup.js";
+import connectToMongoDB from "./config/mongo-setup.js";
+import authRouter from "./routes/auth-routes.js";
+import mongoose from "mongoose";
 
 const app = express();
 app.use(express.json({ limit: "30mb" }));
@@ -17,25 +19,10 @@ app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(morgan("dev"));
 app.use(cookieParser());
 
-// Get Info from Google user
-app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
-);
+app.get("/auth", authRouter);
+app.get("/", (req, res) => res.send("Welcome to your express application!"));
 
-// Handle Redirect after Sign In
-app.get(
-  "/auth/google/redirect",
-  passport.authenticate("google"),
-  (req, res) => {
-    res.send("You reached the callback uri");
-  }
-);
-
-app.get("/", (_, res) => {
-  res.send("Welcome to your express application!");
-});
-
+connectToMongoDB();
 app.listen(process.env.PORT, () => {
   console.log(colors.cyan("App started"));
 });
